@@ -3,8 +3,10 @@ package com.picois.myalbumapplication.Adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.picois.myalbumapplication.Model.Album
 import com.picois.myalbumapplication.R
 import kotlinx.android.synthetic.main.item_album.view.*
@@ -21,9 +23,9 @@ class AlbumAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         val layoutInflater = LayoutInflater.from(parent.context)
 
-        when(viewType){
-            TYPE_HEADER -> return HeaderViewHolder(layoutInflater.inflate(R.layout.item_album_header, parent, false))
-            else -> return ItemViewHolder(layoutInflater.inflate(R.layout.item_album, parent, false))
+        when (viewType) {
+            TYPE_ITEM -> return ItemViewHolder(layoutInflater.inflate(R.layout.item_album, parent,false))
+            else -> return HeaderViewHolder(layoutInflater.inflate(R.layout.item_album_header, parent,false))
         }
     }
 
@@ -37,7 +39,10 @@ class AlbumAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(listAlbum[position].id == 0) TYPE_HEADER else TYPE_ITEM
+        if (listAlbum[position].id == 0) {
+            return TYPE_HEADER;
+        }
+        return TYPE_ITEM;
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -58,7 +63,7 @@ class AlbumAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 }
 
-private class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+private class HeaderViewHolder(view: View) : ViewHolder(view) {
     var tvAlbumNumber: TextView
 
     init {
@@ -67,10 +72,12 @@ private class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     }
 }
 
-private class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+private class ItemViewHolder(itemView: View) : ViewHolder(itemView) {
     var tvTitle: TextView
+    var imageThumbnail: ImageView
 
     init {
         tvTitle = itemView.findViewById<View>(R.id.tvTitle) as TextView
+        imageThumbnail = itemView.findViewById<View>(R.id.imageThumbnail) as ImageView
     }
 }

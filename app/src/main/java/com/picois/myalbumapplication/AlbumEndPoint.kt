@@ -6,5 +6,5 @@ import retrofit2.http.GET
 
 interface AlbumEndPoint {
     @GET("img/shared/technical-test.json")
-    fun getListAlbum(): Call<Album>
+    fun getListAlbum(): Call<List<Album>>
 }

@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.picois.myalbumapplication.AlbumEndPoint
+import com.picois.myalbumapplication.Database.AppDatabase
 import com.picois.myalbumapplication.Model.Album
 import com.picois.myalbumapplication.Service.ServiceBuilder
 import retrofit2.Call
@@ -18,6 +19,8 @@ class AlbumViewModel(app: Application)  : AndroidViewModel(app) {
     var currentAlbumId: Int = 0
     var context = app.baseContext
 
+    val db = AppDatabase.getInstance(context)
+
     init {
         getListAlbum()
     }
@@ -27,7 +30,7 @@ class AlbumViewModel(app: Application)  : AndroidViewModel(app) {
         val callListAlbum = request.getListAlbum()
         callListAlbum.enqueue(object: Callback<List<Album>> {
             override fun onFailure(call: Call<List<Album>>, t: Throwable) {
-                Toast.makeText(context, "fail :)", Toast.LENGTH_LONG).show()
+                getAllAlbum()
             }
 
             override fun onResponse(call: Call<List<Album>>, response: Response<List<Album>>) {
@@ -39,15 +42,19 @@ class AlbumViewModel(app: Application)  : AndroidViewModel(app) {
     }
 
     private fun populateListAlbum(albums: List<Album>){
+
         albums.forEach { album ->
             if(album.albumId != currentAlbumId){
-                listAlbum.add(Album(album.albumId, 0, "", "", ""))
+                db?.getDao()?.insertAll(Album(album.albumId, 0, "", "", ""))
                 currentAlbumId = album.albumId
             }
-            listAlbum.add(album)
+            db?.getDao()?.insertAll(album)
         }
-        Toast.makeText(context, "success :)", Toast.LENGTH_LONG).show()
+        getAllAlbum()
+    }
 
+    private fun getAllAlbum(){
+        db?.getDao()?.getAlbums()?.let { listAlbum.addAll(it) }
         albumLiveData.value = listAlbum
     }
 }

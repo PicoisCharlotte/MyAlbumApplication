@@ -1,5 +1,6 @@
 package com.picois.myalbumapplication.Adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.bumptech.glide.Glide
 import com.picois.myalbumapplication.Model.Album
 import com.picois.myalbumapplication.R
 import kotlinx.android.synthetic.main.item_album.view.*
@@ -19,9 +21,12 @@ class AlbumAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var listAlbum: MutableList<Album> = mutableListOf()
 
+    private lateinit var context: Context
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         val layoutInflater = LayoutInflater.from(parent.context)
+        this.context = parent.context
 
         when (viewType) {
             TYPE_ITEM -> return ItemViewHolder(layoutInflater.inflate(R.layout.item_album, parent,false))
@@ -57,6 +62,7 @@ class AlbumAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         } else if (holder is ItemViewHolder){
 
             currentItem.tvTitle.text = currentAlbum.title
+            Glide.with(context).load(currentAlbum.thumbnailUrl + ".png").placeholder(R.drawable.placeholder_images).into(currentItem.imageThumbnail)
 
         }
 

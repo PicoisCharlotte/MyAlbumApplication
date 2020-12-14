@@ -1,7 +1,6 @@
 package com.picois.myalbumapplication.ViewModel
 
 import android.app.Application
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.picois.myalbumapplication.AlbumEndPoint
@@ -21,8 +20,11 @@ class AlbumViewModel(app: Application)  : AndroidViewModel(app) {
 
     val db = AppDatabase.getInstance(context)
 
+    var result: Int = 0
+
     init {
         getListAlbum()
+        result = 0
     }
 
     fun getListAlbum(){
@@ -30,6 +32,7 @@ class AlbumViewModel(app: Application)  : AndroidViewModel(app) {
         val callListAlbum = request.getListAlbum()
         callListAlbum.enqueue(object: Callback<List<Album>> {
             override fun onFailure(call: Call<List<Album>>, t: Throwable) {
+                result = 404
                 getAllAlbum()
             }
 
@@ -50,10 +53,11 @@ class AlbumViewModel(app: Application)  : AndroidViewModel(app) {
             }
             db?.getDao()?.insertAll(album)
         }
+        result = 200
         getAllAlbum()
     }
 
-    private fun getAllAlbum(){
+    fun getAllAlbum() {
         db?.getDao()?.getAlbums()?.let { listAlbum.addAll(it) }
         albumLiveData.value = listAlbum
     }
